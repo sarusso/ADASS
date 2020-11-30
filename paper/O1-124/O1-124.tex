@@ -1,0 +1,149 @@
+% This is the ADASS_template.tex LaTeX file, 19th Sep 2019.
+% It is based on the ASP general author template file, but modified to reflect the specific
+% requirements of the ADASS proceedings.
+% Copyright 2014, Astronomical Society of the Pacific Conference Series
+% Revision:  14 August 2014
+
+% To compile, at the command line positioned at this folder, type:
+% latex ADASS_template
+% latex ADASS_template
+% dvipdfm ADASS_template
+% This will create a file called ADASS_template.pdf
+
+\documentclass[11pt,twoside]{article}
+
+% Do NOT use ANY packages other than asp2014. 
+\usepackage{asp2014}
+
+\aspSuppressVolSlug
+\resetcounters
+
+% References must all use BibTeX entries in a .bibfile.
+% References must be cited in the text using \citet{} or \citep{}.
+% Do not use \cite{}.
+% See ManuscriptInstructions.pdf for more details
+\bibliographystyle{asp2014}
+
+% The ``markboth'' line sets up the running heads for the paper.
+% 1 author: "Surname"
+% 2 authors: "Surname1 and Surname2"
+% 3 authors: "Surname1, Surname2, and Surname3"
+% >3 authors: "Surname1 et al."
+% Replace ``Short Title'' with the actual paper title, shortened if necessary.
+% Use mixed case type for the shortened title
+% Ensure shortened title does not cause an overfull hbox LaTeX error
+% See ASPmanual2010.pdf 2.1.4  and ManuscriptInstructions.pdf for more details
+\markboth{Stefano Alberto Russo and Giuliano Taffoni}{A microservice-oriented science platform architecture}
+
+\begin{document}
+
+\title{A microservice-oriented science platform architecture}
+
+% Note the position of the comma between the author name and the 
+% affiliation number.
+% Authors surnames should come after first names or initials, eg John Smith, or J. Smith.
+% Author names should be separated by commas.
+% The final author should be preceded by "and".
+% Affiliations should not be repeated across multiple \affil commands. If several
+% authors share an affiliation this should be in a single \affil which can then
+% be referenced for several author names. If only one affiliation, no footnotes are needed.
+% See ManuscriptInstructions.pdf and ASP's manual2010.pdf 3.1.4 for more details
+\author{Stefano Alberto~Russo$^1$ and Giuliano~Taffoni$^1$}
+\affil{$^1$INAF, Trieste, TS, Italy; \email{stefano.russo@inaf.it}}
+
+
+% This section is for ADS Processing.  There must be one line per author. paperauthor has 9 arguments.
+\paperauthor{Stefano Alberto~Russo}{stefano.russo@inaf.it}{0000-0001-7511-2910}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
+\paperauthor{Giuliano~Taffoni}{giuliano.taffoni@inaf.it}{ 0}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
+
+
+% There should be one \aindex line (commented out) for each author. These are used to
+% build up the author index for the Proceedings. The surname must come first, followed by
+% initials. Note the use of ~ before each initial to control spacing.
+% The \author entries (see above) have surname last. These \aindex entries have
+% surname first.
+% The Aindex.py command willl create them for you after you have constructed the \author
+% The first entry should be the first author, for bold-facing the author index page-reference
+
+%\aindex{FistAuthor1,~S.~A.}
+%\aindex{Author2,~S.~B.}
+%\aindex{Author3,~S.}
+
+
+\begin{abstract}
+A Science Platform (SP) is an environment designed to offer users a smoother experience when interacting with data and computing resources. Usually when referring to a SP, we assume a web based environment based on Jupyter notebooks and software containerisation, however also other approaches or definitions of SP may be feasible (e.g. full interactive desktop access).\\
+
+In current SP architectures, the software available to the user is usually pre-defined and with little or not control by the users. This means that is almost impossible for a user to run a computing task using a specific analysis software (i.e. a specific version, a specific set of dependencies, or just a software not supported by the SP), and that from an administrative prospective there is a strong overhead in supporting the various (yet limited) software versions.\\
+
+We tested several approaches to overcome these limitations and we propose a solution based on changing the prospective and framing user task of the SP as microservices - independent and self-contained units. This enables great flexibility, security and sustainability, and empowers the users to choose, build and run their own software environments, which also improves reproducibility.\\
+
+We successfully used this architecture in the context of the ESCAPE project, at INAF, where we implemented the computing tasks microservices both as Docker and Singularity containers. The first impressions and user feedback are very promising, in particular for interactive desktop applications for data reduction and analysis.
+\end{abstract}
+
+% These lines show examples of subject index entries. At this stage these have to commented
+% out, and need to be on separate lines. Eventually, they will be automatically uncommented
+% and used to generate entries in the Subject Index at the end of the Proceedings volume.
+% Don't leave these in! - replace them with ones relevant to your paper.
+
+
+% These lines show examples of ASCL index entries. At this stage these have to commented
+% out, and need to be on separate lines. Eventually, they will be automatically uncommented
+% and used to generate entries in the ASCL Index at the end of the Proceedings volume.
+% The ascl.py command will scan your paper on possible code names.
+% Don't leave these in! - replace them with ones relevant to your paper.
+
+
+\section{Intriduction}
+In the last years a number of science platforms have been developed, both in public (CERN SWAN, ESA datalabs) and in the private sector (Google Colabs, Kaggle Notebooks) \citep[such as][]{juric2017lsst}
+
+
+These platforms all share the same traits, which consist in the ability for the user to select a specific task (i.e. a Jupyter Notebook) and a pre-defined environment with the option in some cases to innstall software packages at runtime via shell commands. For example, LSST claims to have designed a science platofrm consisting in "a web Portal, designed to provide essential data access and visualization services through a simple-to-use website, a Notebook environment, that will provide a Jupyter Notebook-like interface, based on JupyterLab, enabling next-to-the-data analysis".
+
+There are however two strong limitations in this approach: the first is that a user cannot run in an environment that is not supported by the platform, ranging from just a different Python version in to another Linnux distribution. The second is that the only interface with the user analysis is the Jupyter (or similar) notebook itself, making it impossible to run GUi applications which are frequently used in interactive analysis fields ad Astrophysics.
+
+To overcome these two limitations we propose to use microservices -.
+
+
+\subsection{Microservices and containers}
+Microservices are independent and self-contained units that perform a given task. From just summing two numbers to run a cutting edge neural network. Microservices need an interface to talk with. This is usually a REST API over http, but it can also be a SSH daemon or a RPC server. Microservices fit naturally in the containerisation approach, so that each microservice is one container.  In our approach we considered only TCP/IP based interfaces.
+
+Once a microservice is containerised, it is completely unaware about the underlying computing infrastructure. Only the interface is relevant. In the SP context, the interface is usually webserver exposing a user-friendly interaction method, as a Jupyter Notebook or a Web-based remote desktop.
+
+From a SP point of view it is completely irrelevant what the microservice interface protocol is, as long as the user know how to use it. 
+
+
+
+\section{Orchestrating user microservice containers on a Science Platforms}
+to orchestrate microservices on a science platform, we envision a 1) backend with a user interface, which is web-based in our prototype, 2) a scheduler (which can be integrated in the backend or be standalone service) 3) an agent 3) a registry for the microservice container fromw here to pull them. This architectures is summarised in figure 1.
+
+The scheduler is probably the most key component, as it is not only responsible for actually executing user workload on the computing resources, but also to open a tcp/ip tunnel from the container to the science platform backend, in order to let the user to access its own microservice from the SP entrypoint.
+
+The scheduler launches an agent on ore or more computing resources on behalf of the user (standard ssh, qsub or more advances API-based scheuliung systems can be easly supported), and once it lands on the computing resource it first "call back home"  to communicate the internal IP tot he SP abckend, then it pulls the container from the registry, and finally it runs the containers starting the actual user task.
+
+The user can choose from one of the available containers registered in the platform, or setup its own one. To setup a container, the user need to specify the registry, the container type, the container port on which the TCP/IP interface is running, and the container tag/version. The user could also upload the container to an internal registry.
+\\
+\\
+Here it goes a picutre
+
+
+
+\subsection{Limitations}
+There are a number of limitations in this approach. Most notably, how to execute distributed (MPI etc.)  workloads it is still to be investigated, but also how to deal with authentication and authorization for computing resources, container registries and catalog data access.
+
+
+
+\section{conclusions}
+We presented the architecture for a SP based on container microservices, which seems promising in terms of flexibility. Our first tests etc. etc.
+
+
+
+\acknowledgements This work was supported by the European Science Cluster of Astronomy and Particle Physics ESFRI Research Infrastructures project, funded by the European Union's Horizon 2020 research and innovation programme under Grant Agreement no. 824064
+
+
+
+\bibliography{O1-124}  % For BibTex
+
+% if we have space left, we might add a conference photograph here. Leave commented for now.
+% \bookpartphoto[width=1.0\textwidth]{foobar.eps}{FooBar Photo (Photo: Any Photographer)}
+
+\end{document}
