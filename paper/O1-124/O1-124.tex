@@ -33,11 +33,11 @@
 % Use mixed case type for the shortened title
 % Ensure shortened title does not cause an overfull hbox LaTeX error
 % See ASPmanual2010.pdf 2.1.4  and ManuscriptInstructions.pdf for more details
-\markboth{Stefano Alberto Russo, Guido Cupani and Giuliano Taffoni}{A microservice-oriented science platform architecture}
+\markboth{Russo et al.}{A microservice-oriented Science Platform architecture}
 
 \begin{document}
 
-\title{A microservice-oriented science platform architecture}
+\title{A microservice-oriented Science Platform architecture}
 
 % Note the position of the comma between the author name and the 
 % affiliation number.
@@ -48,13 +48,16 @@
 % authors share an affiliation this should be in a single \affil which can then
 % be referenced for several author names. If only one affiliation, no footnotes are needed.
 % See ManuscriptInstructions.pdf and ASP's manual2010.pdf 3.1.4 for more details
-\author{Stefano Alberto~Russo$^1$, Guido~Cupani$^1$, and Giuliano~Taffoni$^1$}
-\affil{$^1$INAF, Trieste, TS, Italy; \email{stefano.russo@inaf.it}}
+\author{Stefano Alberto~Russo,$^1$ Guido~Cupani,$^1$ Sara~Bertocco,$^1$ Marco~Molinaro,$^1$ and Giuliano~Taffoni$^1$}
+
+\affil{$^1$INAF - Astronomical Observatory of Trieste, TS, Italy; \email{stefano.russo@inaf.it}}
 
 
 % This section is for ADS Processing.  There must be one line per author. paperauthor has 9 arguments.
-\paperauthor{Stefano Alberto~Russo}{stefano.russo@inaf.it}{0000-0001-7511-2910}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
+\paperauthor{Stefano Alberto~Russo}{stefano.russo@inaf.it}{0000-0003-4487-6752}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
 \paperauthor{Guido~Cupani}{guido.cupani@inaf.it}{0000-0002-6830-9093}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
+\paperauthor{Sara~Bertocco}{sara.bertocco@inaf.it}{0000-0003-2386-623X}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
+\paperauthor{Marco~Molinaro}{marco.molinaro@inaf.it}{000-0001-5028-6041}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
 \paperauthor{Giuliano~Taffoni}{giuliano.taffoni@inaf.it}{0000-0002-4211-6816}{INAF}{OATS}{Trieste}{TS}{34100}{Italy}
 
 
@@ -72,17 +75,21 @@
 
 
 \begin{abstract}
-A Science Platform (SP) is an environment designed to offer users a smoother experience when interacting with data and computing resources. Usually when referring to a SP, we assume a web based environment based on Jupyter notebooks and software containerisation, however also other approaches or definitions of SP may be feasible (e.g. full interactive desktop access).
-In current SP architectures, the software available to the user is usually pre-defined and with little or not control by the users. This means that is almost impossible for a user to run a computing task using a specific analysis software (i.e. a specific version, a specific set of dependencies, or just a software not supported by the SP), and that from an administrative prospective there is a strong overhead in supporting the various (yet limited) software versions.
-We tested several approaches to overcome these limitations and we propose a solution based on changing the prospective and framing user task of the SP as microservices - independent and self-contained units. This enables great flexibility, security and sustainability, and empowers the users to choose, build and run their own software environments, which also improves reproducibility.
-We successfully used this architecture in the context of the ESCAPE project, at INAF, where we implemented the computing tasks microservices both as Docker and Singularity containers. The first impressions and user feedback are very promising, in particular for interactive desktop applications for data reduction and analysis.
+A Science Platform (SP) is an environment designed to offer users a smoother experience when interacting with data and computing resources. Usually when referring to a SP, we assume a web-based environment built using Jupyter Notebooks and software containerisation, however also other approaches or definitions of SP may be feasible (e.g. full interactive desktop access).
+In current SP architectures, the software available to the users is usually pre-defined and with little or not control by the users themselves. This means that it is almost impossible for a user to run a computing task using a specific software environment (i.e. a specific software version, a specific set of dependencies, or just a software not supported by the SP), and that from an administration prospective there is a strong overhead in supporting all the various (yet limited) software environments.
+We tested several approaches to overcome these limitations and we propose a solution based on changing the prospective and framing user tasks of the SP as microservices - independent and self-contained units. This enables great flexibility, security and sustainability, and empowers the users to choose, build and run their own software environments, which also improves reproducibility.
+We successfully tested this architecture in the context of the ESCAPE project, at INAF, where we implemented the computing task microservices both as Docker and Singularity containers. The first impressions and user feedback are very promising, in particular for interactive desktop applications for data reduction and analysis.
 \end{abstract}
 
 % These lines show examples of subject index entries. At this stage these have to commented
 % out, and need to be on separate lines. Eventually, they will be automatically uncommented
 % and used to generate entries in the Subject Index at the end of the Proceedings volume.
 % Don't leave these in! - replace them with ones relevant to your paper.
-
+%\ssindex{data}
+%\ssindex{data!analysis}
+%\ssindex{data!processing}
+%\ssindex{science portal}
+%\ssindex{computing}
 
 % These lines show examples of ASCL index entries. At this stage these have to commented
 % out, and need to be on separate lines. Eventually, they will be automatically uncommented
@@ -90,59 +97,58 @@ We successfully used this architecture in the context of the ESCAPE project, at 
 % The ascl.py command will scan your paper on possible code names.
 % Don't leave these in! - replace them with ones relevant to your paper.
 
-
 \section{Introduction}
 
 
 
 Over the last few years a number of interactive data analysis platforms have been designed, developed and commercilaized. 
-CERN SWAN \citep{piparo2018swan}
-ESA datalabs \citep{esa_datalabs},
-LSST Science Platform \citep{juric2017lsst},
+CERN SWAN \citep{piparo2018swan},
+ESA Datalabs \citep{esadatalabs},
+the LSST Science Platform \citep{juric2017lsst},
 Google Colab \citep{bisong2019google},
 Azure Machine Learning \citep{azureml}
 and Kaggle Notebooks \citep{kagglenotebooks}
-are just some examples in both the private and public research space.
+are just some examples in both the public and private research spaces.
 
-Most of them, even if not directly referred to as such, fall in our definition a Science Platform (SP): an environment designed to offer users a smoother experience when interacting with data and computing resources. 
+Most of them, even if not directly referred to as such, fall in our definition of a Science Platform (SP): an environment designed to offer users a smoother experience when interacting with data and computing resources. 
 
-These platforms share similar traits, which consist in the ability for the user to select a specific task (i.e. a Jupyter Notebook) and a pre-defined environment with the option, in some cases, to install software packages at runtime. For example, LSST claims to have designed a science platofrm consisting in "a web Portal, designed to provide essential data access and visualization services through a simple-to-use website, a Notebook environment, that will provide a Jupyter Notebook-like interface, based on JupyterLab, enabling next-to-the-data analysis".
+These platforms share similar traits, which consist in the ability for the user to run a specific task using a pre-defined software environment with the option, in some cases, to install extra software packages at runtime. For example, LSST states to have designed a SP consisting in "a web Portal, designed to provide essential data access and visualization services through a simple-to-use website, a JupyterLab environment, that will provide a Jupyter Notebook-like interface enabling next-to-the-data analysis, and an extensive set of Web APIs" \citep[see][]{juric2017lsst}.
 
-There are however two strong limitations in this approach. The first is that a user cannot execute its tasks in an environment not directly supported by the platform, which can span form just a different Python version to requiring an entire different Linux distribution. This aspect is extremly important for reproducibility, since the user has indeed no or little control over the environment in which its task is executed. The second is that the only interface available to the user for interacting with the SP and thereofre its task is the pre-defined one, usually a Jupyter notebook or similar, making it impossible to run classical Graphical User Interface (GUI) applications. These applications are are commonly used and in costant development in interactive analysis fields ad Astrophysics, as for example Astrocook, a quasar spectral analysis software presented in this volume \citep{cupani} that we used a test use-case. Rewriting this kind of applications as web-based applications or components is simply not feasible, and therefore they just do not fit in the standard, Jupyter-like SP model.
+There are however two strong limitations in this approach. The first is that a user cannot execute its tasks in an environment not directly supported by the platform, which can span form just a different Python version to requiring an entire different Linux distribution. This aspect is extremely important for reproducibility, since the user has indeed no or little control over the environment in which its task is executed. The second is that the only interface available to the user for interacting with the SP and therefore its task is the pre-defined one, usually a Jupyter Notebook or similar, making it impossible to run classical Graphical User Interface (GUI) applications. These applications are are commonly used and in constant development in interactive analysis fields ad Astrophysics, as for example Astrocook, a quasar spectral analysis software presented in this volume \citep{P5-64_adassxxx} that we used as a test use-case. Rewriting this kind of applications as web-based applications or components is simply not feasible, and therefore they just do not fit in the standard, Notebook-like SP model.
  
 Due to the recent advances in containerization and microservice technologies, however, a new and more powerful approach is possible, which overcomes these two limitations and that brings great flexibility for both the users and the platform administrators. This approach consist in framing user tasks as microservices, and thus decoupling the SP applications from their orchestration on the SP itself.
 
 
 \subsection{Microservices, containers  and user tasks}
-Microservices are independent and self-contained units that perform a given task. This task can range from just a simple function (i.e. serve a file to download) to complex computer programs (i.e. image classifiers based on neural networks). Microservices are interacted with using a well defined interface, usually a REST API over HTTP, but a Secure Shell protocol (SSH) is a perfectly viable interface as well. In our approach we considered only TCP/IP based interfaces. Microservices fit naturally in the containerisation approach, so that each microservice is one container. Once a microservice is containerised, it is completely unaware about the underlying computing infrastructure. % Only the interface is relevant. 
-Microservices are heavily used in the so called "devops" space, and widely used for the underlying building blocks of modern SP. They are however used for runnig just the SP itself, not the user tasks.
+Microservices are independent and self-contained units that perform a given task. This task can range from just a simple function (i.e. serve a file to download) to complex computer programs (i.e. classify images using a neural network). Microservices are interacted with using a well defined interface, usually a REST API over HTTP, but a Secure Shell protocol (SSH) is a perfectly viable interface as well. Microservices fit naturally in the containerisation approach, so that each microservice is mapped to a container. Once a microservice is containerised, it is completely decoupled from the underlying computing infrastructure.
+Microservices are heavily used in the so called "devops" space, and widely used for the underlying building blocks of modern SP. They are however used for running just the SP itself, not the user tasks.
 
-The architectural approach we propose is based on fully embracing them and to embed user tasks in microservices as well. User task microservices can be treated as independend units and, from a SP point of view, it is completely irrelevant what the microservice interface is, as long as the user know how to use it. This can be for example a web server exposing a user-friendly Web Application as a Jupyter Notebook, but also a Virtual Network Computing (VNC) Desktop Server or even a web-based VNC client embedded in the microservice itself. 
+The architectural approach we propose is based on fully embracing them, and to embed user tasks in microservices as well. User task microservices can be treated as independent units and, from a SP point of view, it is completely irrelevant what the microservice interface is, as long as the user know how to use it. In our approach we consider only TCP/IP based interfaces, as for example a web server exposing a web application (like a Jupyter Notebook), or a Virtual Network Computing (VNC) desktop server, or even a web-based VNC client embedded in the microservice itself. 
 
-Standard user task microservices can be of course provided as built-in tasks, making this apporach to the inexperinced user look like a standad scienca platform, but at the same time allowing power users or platform administrators the ability to plug-in new tasks by just setting up a new microservice container, requiring no modifications of the SP, as explained more in detail in the next section.
+Common user task microservices can be of course provided as built-in tasks, making this approach to the inexperienced user look like a standard SP, but at the same time allowing power users and platform administrators to plug-in new tasks by just setting up a new microservice container, requiring no modifications of the SP, as explained more in detail in the next section.
 
 
 %\section{Orchestrating containerised user task microservices on a Science Platform}
 
 \section{An architecture to orchestrate containerised user task microservices}
-The architecure we propose to orchestrate user task microservices on a SP comprises four main blocks: 1) a backend with a web-based user interface, which is the SP entry point; 2) a scheduler (which can be integrated in the backend or be standalone service); 3) an agent; and 4) a registry for the microservice containers from where to pull them. This architectures is summarised in Figure \ref{sp_architecture}.
+The architecure we propose to orchestrate user task microservices on a SP comprises four main blocks: 1) a backend with a web-based user interface, which is the SP entry point; 2) a scheduler (which can be integrated in the backend or be standalone service); 3) an agent; and 4) a registry for the microservice containers from where to pull them. This architecture is summarised in Figure \ref{sp_architecture}.
 
-\articlefigure{SP_architecure.eps}{sp_architecture}{A SP architecture for running containerised user task microservices}
+\articlefigure{SP_architecure.eps}{sp_architecture}{A SP architecture for running containerised user task microservices.}
 
-A user that wants to execute a task on this architecture can choose from one of the available microservice container tasks registered in the platform, or setup its own one. To setup a new one, the user (or the administrator) needs to specify the container registry, the container type, the container port on which the TCP/IP interface is running, and the container tag/version.
+A user that wants to execute a task on this architecture can choose from one of the available microservice containers registered in the platform, or setup its own one. To setup a new microservice container, the user (or the administrator) needs to specify the container registry, the container type, the container port on which the TCP/IP interface is running, and the container tag/version.
 
-Once the user choose its container task, the backend interact with the scheduler, which is the core of the orchestration process. The scheduler launches an agent on one or more computing resources on behalf of the user (using SSH, standard queueing systems or more advanced API-based management models).
+Once the user choose its container task, the backend interact with the scheduler, which is the core of the orchestration process. The scheduler launches an agent on one or more computing resources on behalf of the user (using SSH, standard queuing systems or more advanced API-based management models).
 
 When the agent lands on the computing resource it first "call back home" to communicate the internal IP to the SP backend, then it pulls the container from the registry, and finally runs the microservice container starting the actual user task.
 
-Meanwhile, the backend opens a TCP/IP tunnel from the SP to the user task microservice container, in order to let the user interact with its own microservice. At this point the user is looped in, and an exclusive secure tunnle is opened witht its own microservice, with wich it will interact. Since as mentioned before, the SP does not need to know anything about the user task microservice interface, but just how orchestrate the microservice, no further operation is required by the SP.
+Meanwhile, the backend opens a TCP/IP tunnel from the SP to the user task microservice container. At this point the user is looped in, so that it can interact with its microservice through the tunnel using the microservice interface. Since as mentioned before the SP does not need to know anything about the user task microservice interface, but just how orchestrate the microservice itself, no further operation is required by the SP.
 
-We tested this architectural apporach in the context of the ESCAPE project, at INAF, where we implemented the computing tasks microservices both as Docker and Singularity containers and where it proved very easy for power users and platform administrators to add new tasks to the platform, which has been testes in particular for interactive desktop applications for data reduction and analysis.
+We tested this architectural approach in the context of the ESCAPE European funded project \footnote{https://projectescape.eu}, at INAF, where we implemented the user tasks microservices both as Docker and Singularity containers, and in particular for interactive desktop applications for data reduction and analysis.
 
 
 
 \subsection{Next steps}
-There are a number of limitations in this approach. Most notably, how to execute distributed workloads (i.e. MPI-based tasks) it is still to be investigated, but also how to deal with authentication and authorization for computing resources, container registries and catalog data access. We can envision am intermediate level of authentication for HTTP(S)-based user tasks, but for custom protocols the authentication is entirely up to the user task which, even if containerised and thefore heavly sanboxed, can still expose some secutiry issues in case of weak or no authentication. It is assumed an underlying shared filesystem between the user and the computing resources of the SP, which might be a poor assumption in some circumstances, and therefore integration with data lake solutions has to be investigated.
+There are a number of limitations in this approach. Most notably, how to execute distributed workloads (i.e. MPI-based tasks) it is still to be investigated, but also how to deal with authentication and authorization for computing resources, container registries and catalog data access. We can envision an intermediate level of authentication for HTTP(S)-based user tasks, but for custom protocols the authentication is entirely up to the user task which, even if containerised and therefore heavily sanboxed, can still expose some security issues in case of weak or no authentication. It is also assumed an underlying shared filesystem between the user and the computing resources of the SP, which might be a poor assumption in some circumstances, and therefore integration with data lakes or similar solutions has to be investigated.
 
 
 
@@ -150,13 +156,14 @@ There are a number of limitations in this approach. Most notably, how to execute
 \section{Conclusions}
 %We presented the architecture for a SP based on container microservices, which seems promising in terms of flexibility. This approach is soo cool blah blah
 
-We proposed a solution based on changing the prospective of SP user tasks and framing them as microservices - independent and self-contained units. This enables great flexibility, security and sustainability, and empowers the users to choose, build and run their own software environments, which also improves reproducibility. We successfully used this architecture in the context of the ESCAPE project, at INAF, where we implemented the computing tasks microservices both as Docker and Singularity containers. The first impressions and user feedback are very promising, in particular for interactive desktop applications for data reduction and analysis.\\
+We proposed a SP architecture based on changing the prospective of user tasks and framing them as microservices - independent and self-contained units. This enables great flexibility, security and sustainability, and empowers the users to choose, build and run their own software environments, which also improves reproducibility. We successfully tested this architecture in the context of the ESCAPE project, at INAF, where we implemented the user task microservices both as Docker and Singularity containers. The first impressions and user feedback are very promising, in particular for interactive desktop applications for data reduction and analysis, where the ease of use, flexibility and reliability of such approach have been particularly appreciated.
 
 %Our first tests wiht an internal prototpype at INAF show prmising qualitative results ain term of user rception and feedback. 
 
 
 
-\acknowledgements This work was supported by the European Science Cluster of Astronomy and Particle Physics ESFRI Research Infrastructures project, funded by the European Union's Horizon 2020 research and innovation programme under Grant Agreement no. 824064
+\acknowledgements This work was supported by the European Science Cluster of Astronomy and Particle Physics ESFRI Research Infrastructures project, funded by the European Union's Horizon 2020 research and innovation programme under Grant Agreement no. 824064.
+We also acknowledge the computing centre of INAF-Osservatorio Astronomico di Trieste, \citep{bertocco,taffoni}, for the availability of computing resources and support.
 
 
 

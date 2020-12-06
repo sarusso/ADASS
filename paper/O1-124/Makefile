@@ -47,7 +47,7 @@ ZIP_FILE  = $(P)_v$(V).zip
 FILESPDF  = $(P).pdf copyrightform_$(P)_$(A).pdf
 FILESTEX  = $(P).tex $(P).bib $(FIGS) makedefs
 FILESASP  = asp2014.bst asp2014.sty
-FILES4AR  = $(FILESTEX) $(FILESPDF)
+FILES4AR  = $(FILESTEX) $(FILESPDF) SP_architecure.eps
 
 # ensure current directory is in the PATH
 export PATH := .:$(PATH)
